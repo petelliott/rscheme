@@ -162,4 +162,10 @@ class Interpreter
       raise "invalid name argument to define"
     end
   end
+
+  def set!(sym, val)
+    raise "can't set! non-symbol #{sym}" if !(sym.is_a? Symbol)
+    raise "set!: #{sym} is unbound" if !(@scope.include? sym)
+    @scope[sym] = val
+  end
 end
