@@ -9,6 +9,7 @@ module Sexp
       when nil then Eof.instance
       when "("  then sexp_read_cons
       when "\"" then sexp_read_string
+      when "#" then sexp_read_hash
       else
         tok = sexp_read_tok
         case tok
@@ -95,6 +96,19 @@ module Sexp
       str.undump
     end
 
+    def sexp_read_hash
+      assert_next_char '#'
+      tok = sexp_read_tok
+      case tok
+      when "t"
+        true
+      when "f"
+        false
+      else
+        raise "unrecognised hash sequence"
+      end
+    end
+
   end
 
 
@@ -178,5 +192,17 @@ class Array
       s.to_sexp
     end.join(" ")
     "#(#{str})"
+  end
+end
+
+class TrueClass
+  def to_sexp
+    "#t"
+  end
+end
+
+class FalseClass
+  def to_sexp
+    "#f"
   end
 end

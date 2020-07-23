@@ -73,7 +73,7 @@ class Builtin
 end
 
 class Interpreter
-  @@specials = Set[:define, :if, :quote, :lambda, :set!]
+  @@specials = Set[:define, :"if", :quote, :lambda, :set!]
 
   def initialize(scope=Scope.new, builtins=true)
     @scope = scope
@@ -167,5 +167,13 @@ class Interpreter
     raise "can't set! non-symbol #{sym}" if !(sym.is_a? Symbol)
     raise "set!: #{sym} is unbound" if !(@scope.include? sym)
     @scope[sym] = val
+  end
+
+  def if(val, tcase, fcase)
+    if val
+      eval(tcase)
+    else
+      eval(fcase)
+    end
   end
 end
