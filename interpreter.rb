@@ -73,7 +73,7 @@ class Builtin
 end
 
 class Interpreter
-  @@specials = Set[:define, :"if", :quote, :lambda, :set!]
+  @@specials = Set[:define, :"if", :quote, :lambda, :set!, :and, :or]
 
   def initialize(scope=Scope.new, builtins=true)
     @scope = scope
@@ -170,10 +170,32 @@ class Interpreter
   end
 
   def if(val, tcase, fcase)
-    if val
+    if val != false
       eval(tcase)
     else
       eval(fcase)
     end
+  end
+
+  def and(*forms)
+    ret = true
+    forms.each do |expr|
+      ret = eval(expr)
+      if ret == false
+        break false
+      end
+    end
+    ret
+  end
+
+  def or(*forms)
+    ret = false
+    forms.each do |expr|
+      ret = eval(expr)
+      if ret != false
+        break ret
+      end
+    end
+    ret
   end
 end
