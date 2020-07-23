@@ -4,5 +4,10 @@ interp = Interpreter.new
 
 loop do
   print "> "
-  puts interp.eval($stdin.read_sexp).to_sexp
+  obj = $stdin.read_sexp
+  if obj == Eof.instance
+    puts ""
+    break
+  end
+  puts interp.eval(obj).to_sexp
 end

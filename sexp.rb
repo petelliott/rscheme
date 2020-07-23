@@ -1,11 +1,12 @@
 require "stringio"
+require "./object"
 
 module Sexp
   module IO
     def read_sexp
-      drain_ws
+      return Eof.instance if !(drain_ws)
       case peek
-      when nil then nil
+      when nil then Eof.instance
       when "("  then sexp_read_cons
       when "\"" then sexp_read_string
       else
@@ -32,9 +33,10 @@ module Sexp
       each_char do |ch|
         if /^\S/ === ch
           ungetc(ch)
-          break
+          return ch
         end
       end
+      nil
     end
 
 
